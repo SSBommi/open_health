@@ -206,6 +206,9 @@ has no `illness`) and the ring-clock warnings (`clock.warnings`). Still iOS-only
 
 ## Known gaps (web-only, not yet on iOS)
 
+- **Scores panel (Sleep + Readiness)**: web renders `nights[].sleep_score` and the new
+  `readiness` array (`oura-summary::readiness`) in `dashboard/web/scores.js`; iOS does not
+  show either score yet.
 - **One-page day view**: web shows Sleep, Activity and Heart rate on one scrolling page, every
   chart on one time axis (`dayAxis`) with a shared cursor (`dayCursor`), plus ‹ › / ← → to step
   through days with data; iOS `DayReportView` keeps tabs and reaches days via `AllDaysView`.

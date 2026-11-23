@@ -2219,6 +2219,7 @@ async function load() {
   $("digest").classList.add("reveal");
   $("digest").innerHTML = (d.digest || "").replace(/([+-]?\d[\d.]*\s?(?:%|bpm|ms|m\/s))/g, '<span class="metric">$1</span>');
   renderActions(d);
+  if (window.renderScores) window.renderScores(d); // scores.js
   renderTiles(d);
   HR_QUARTER_LOAD = null;
   renderDay(d);

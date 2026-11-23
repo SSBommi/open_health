@@ -15,6 +15,7 @@
 pub mod hourly_hr;
 pub mod research_export;
 pub mod ring_time;
+pub mod readiness;
 pub mod sleep_score;
 pub mod symptoms;
 
@@ -3097,6 +3098,7 @@ pub fn build_summary(
     }
     clock_diag["undated_reasons"] = json!(undated_reasons_json);
     clock_diag["warnings"] = json!(clock_warnings);
+    let readiness_json = readiness::build(&nights_json, demo.age);
 
     Ok(json!({
         "generated_at": now,
@@ -3107,6 +3109,8 @@ pub fn build_summary(
         "profile": demo.to_json(),
         "nights": nights_json,
         "sleep_debt": sleep_debt,
+        // Daily 0–100 Readiness from the nights above (see `readiness`).
+        "readiness": readiness_json,
         // Model-free Symptom Radar: the same four biomarkers the torch illness model
         // eats, judged against the wearer's own baseline. Same JSON shape as
         // IllnessResult so one card renders either source.

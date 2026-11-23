@@ -34,6 +34,8 @@ const DNA_CSS: &str = include_str!("../../../dashboard/web/dna.css");
 const BLOOD_HTML: &str = include_str!("../../../dashboard/web/blood.html");
 const BLOOD_JS: &str = include_str!("../../../dashboard/web/blood.js");
 const BLOOD_CSS: &str = include_str!("../../../dashboard/web/blood.css");
+const SCORES_JS: &str = include_str!("../../../dashboard/web/scores.js");
+const SCORES_CSS: &str = include_str!("../../../dashboard/web/scores.css");
 
 fn read_ring_key(path: Option<&Path>) -> Result<String> {
     let path = path.ok_or_else(|| anyhow!("dashboard was started without --key-file"))?;
@@ -581,6 +583,24 @@ async fn handle(
                 "200 OK",
                 "text/javascript; charset=utf-8",
                 &asset("app.js", APP_JS),
+            )
+            .await
+        }
+        (_, "/scores.js") => {
+            write_resp(
+                &mut sock,
+                "200 OK",
+                "text/javascript; charset=utf-8",
+                &asset("scores.js", SCORES_JS),
+            )
+            .await
+        }
+        (_, "/scores.css") => {
+            write_resp(
+                &mut sock,
+                "200 OK",
+                "text/css; charset=utf-8",
+                &asset("scores.css", SCORES_CSS),
             )
             .await
         }
