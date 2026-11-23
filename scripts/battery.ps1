@@ -33,12 +33,18 @@ if (-not (Test-Path $exe)) { Write-Host "oura.exe not found. Run 'cargo build --
 if (-not (Test-Path $key)) { Write-Host "Ring key not found at $key."; exit 1 }
 
 function Set-Feature([string]$feature, [string]$mode) {
-    $out = & $exe --key-file $key feature-mode $feature --mode $mode 2>&1 | Out-String
-    if ($out -match "SUCCESS") {
-        Write-Host ("  {0,-12} {1}" -f $feature, $mode)
-    } else {
-        Write-Host ("  {0,-12} FAILED: {1}" -f $feature, $out.Trim()) -ForegroundColor Yellow
+    # The ring sometimes misses one scan right after the previous connection closes,
+    # so try up to three times with a short pause.
+    for ($try = 1; $try -le 3; $try++) {
+        $out = & $exe --key-file $key feature-mode $feature --mode $mode 2>&1 | Out-String
+        if ($out -match "SUCCESS") {
+            Write-Host ("  {0,-12} {1}" -f $feature, $mode)
+            return
+        }
+        Start-Sleep -Seconds 3
     }
+    $why = ($out -split "`n" | Where-Object { $_ -match "Error:|Caused by|no matching|ble error" } | ForEach-Object { $_.Trim() }) -join " "
+    Write-Host ("  {0,-12} FAILED after 3 tries: {1}" -f $feature, $why) -ForegroundColor Yellow
 }
 
 function Get-Stage {
